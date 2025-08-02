@@ -12,3 +12,5 @@ for r in results:
     print(r['content'][:200])
     print(f"Score: {r['score']}")
     print("---")
+
+    
