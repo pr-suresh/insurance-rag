@@ -17,6 +17,10 @@ dependencies = [
     "ragas>=0.1.0",               # For RAG evaluation
     "langsmith>=0.1.0",           # For monitoring
     
+    # Query enhancement
+    "langchain-cohere>=0.1.0",    # For reranking (optional)
+    "rank-bm25>=0.2.0",           # For keyword search
+    
     # Helpful additions
     "rich>=13.0.0",               # Pretty console output
     "typer>=0.9.0",               # CLI interface
