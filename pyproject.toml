@@ -13,9 +13,11 @@ dependencies = [
     
     # New Agentic dependencies
     "langgraph>=0.2.0",           # For building agents
-    "tavily-python>=0.3.0",       # For web search
-    "ragas>=0.1.0",               # For RAG evaluation
+    "langchain-tavily>=0.2.0",    # Official Tavily integration
+    "ragas==0.2.10",               # For RAG evaluation with testset generation
     "langsmith>=0.1.0",           # For monitoring
+    "Pillow>=10.0.0",             # PIL for RAGAS
+    "datasets>=2.14.0",           # For dataset handling
     
     # Query enhancement
     "langchain-cohere>=0.1.0",    # For reranking (optional)
@@ -24,6 +26,11 @@ dependencies = [
     # Helpful additions
     "rich>=13.0.0",               # Pretty console output
     "typer>=0.9.0",               # CLI interface
+    
+    # UI Dependencies
+    "streamlit>=1.28.0",          # Web UI framework
+    "plotly>=5.17.0",             # Interactive charts
+    "streamlit-plotly-events>=0.0.6",  # Enhanced plotly integration
 ]
 
 [tool.uv]
