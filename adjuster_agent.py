@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, AIMessage
 from langchain_core.tools import tool
-from langchain_community.tools.tavily_search import TavilySearchResults
+from langchain_tavily import TavilySearch
 
 # LangGraph imports
 from langgraph.graph import StateGraph, END
@@ -69,14 +69,33 @@ class ClaimsAdjusterAgent:
                 query: What to search for in the claims database
             """
             print(f"🔍 Searching claims database for: {query}")
-            result = self.router.smart_query(query, explain=False)
+            
+            # Use the enhanced RAG system for better claim search
+            from enhanced_rag import EnhancedInsuranceRAG
+            rag = EnhancedInsuranceRAG(use_reranking=False)
+            rag.ingest_data("data/insurance_claims.csv")
+            
+            # Try claim number search first, then hybrid search
+            results = rag.hybrid_search(query, k=5)
+            
+            if not results:
+                return f"CLAIMS DATABASE RESULTS:\nNo results found for query: {query}"
             
             # Format for adjuster
-            output = f"CLAIMS DATABASE RESULTS:\n{result['answer']}\n\n"
-            if result['sources']:
-                output += "Similar Claims Found:\n"
-                for i, doc in enumerate(result['sources'][:3], 1):
-                    output += f"{i}. {doc.page_content[:200]}...\n"
+            output = f"CLAIMS DATABASE RESULTS:\nFound {len(results)} relevant claims:\n\n"
+            
+            for i, result in enumerate(results[:3], 1):
+                metadata = result.get('metadata', {})
+                claim_id = metadata.get('claim_id', 'Unknown')
+                claim_type = metadata.get('claim_type', 'Unknown')
+                total_exposure = metadata.get('total_exposure', 0)
+                state = metadata.get('loss_state', 'Unknown')
+                
+                output += f"{i}. CLAIM {claim_id}:\n"
+                output += f"   Type: {claim_type}\n"
+                output += f"   Total Exposure: ${total_exposure:,.2f}\n"
+                output += f"   State: {state}\n"
+                output += f"   Details: {result['content'][:300]}...\n\n"
             
             return output
         
@@ -91,21 +110,22 @@ class ClaimsAdjusterAgent:
             """
             print(f"⚖️  Searching {state} insurance laws for: {query}")
             
-            # Initialize Tavily
-            tavily = TavilySearchResults(max_results=3)
+            # Initialize Tavily Search
+            tavily = TavilySearch(max_results=3)
             
             # Build targeted search query
             search_query = f"{state} insurance law regulation {query} statute requirement 2024 liability claims adjuster"
             
             try:
-                results = tavily.run(search_query)
+                # Search for legislation
+                results = tavily.invoke({"query": search_query})
                 
                 # Format for adjusters
                 output = f"\n{state.upper()} INSURANCE LAW RESEARCH:\n"
                 for i, result in enumerate(results, 1):
                     output += f"\n{i}. LEGAL FINDING:\n"
-                    output += f"   {result['content'][:400]}...\n"
-                    output += f"   Source: {result['url']}\n"
+                    output += f"   {result.get('content', '')[:400]}...\n"
+                    output += f"   Source: {result.get('url', 'N/A')}\n"
                 
                 return output
             except Exception as e:

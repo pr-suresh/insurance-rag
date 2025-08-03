@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claims Adjuster Intelligence System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+        }
+        .search-card {
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .result-card {
+            border-left: 4px solid #007bff;
+            margin-bottom: 1rem;
+            transition: transform 0.2s;
+        }
+        .result-card:hover {
+            transform: translateY(-2px);
+        }
+        .claim-id {
+            color: #007bff;
+            font-weight: bold;
+        }
+        .amount {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .loading {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1><i class="fas fa-balance-scale"></i> Claims Adjuster Intelligence System</h1>
+                    <p class="lead">Professional claims search and analysis powered by AI</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <button id="initBtn" class="btn btn-light btn-lg">
+                        <i class="fas fa-rocket"></i> Initialize System
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <!-- System Status -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div id="systemStatus" class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i> System not initialized. Click "Initialize System" to begin.
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Interface -->
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card search-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-search"></i> Claim Search</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <input type="text" id="searchQuery" class="form-control form-control-lg" 
+                                       placeholder="Enter claim number (GL-2024-0024) or search terms...">
+                            </div>
+                            <div class="col-md-4">
+                                <button id="searchBtn" class="btn btn-primary btn-lg w-100" disabled>
+                                    <i class="fas fa-search"></i> Search
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <select id="searchType" class="form-select">
+                                    <option value="hybrid">Hybrid Search</option>
+                                    <option value="exact">Exact Claim Number</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="range" id="maxResults" class="form-range" min="1" max="10" value="5">
+                                <label>Max Results: <span id="maxResultsLabel">5</span></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h6><i class="fas fa-bolt"></i> Quick Searches</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-primary quick-search" data-query="auto accident claims">
+                                <i class="fas fa-car"></i> Auto Claims
+                            </button>
+                            <button class="btn btn-outline-primary quick-search" data-query="property damage claims">
+                                <i class="fas fa-home"></i> Property Claims
+                            </button>
+                            <button class="btn btn-outline-primary quick-search" data-query="claims over $100000">
+                                <i class="fas fa-dollar-sign"></i> High Value
+                            </button>
+                            <button class="btn btn-outline-primary quick-search" data-query="pending claims">
+                                <i class="fas fa-clock"></i> Pending
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div id="loading" class="text-center loading">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Searching...</span>
+                    </div>
+                    <p class="mt-2">Searching claims database...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div id="results"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let systemReady = false;
+
+        // Initialize system
+        document.getElementById('initBtn').addEventListener('click', function() {
+            const btn = this;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Initializing...';
+
+            fetch('/api/initialize', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'}
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    systemReady = true;
+                    document.getElementById('systemStatus').className = 'alert alert-success';
+                    document.getElementById('systemStatus').innerHTML = 
+                        '<i class="fas fa-check-circle"></i> System ready! You can now search claims.';
+                    document.getElementById('searchBtn').disabled = false;
+                    btn.innerHTML = '<i class="fas fa-check"></i> System Ready';
+                    btn.className = 'btn btn-success btn-lg';
+                } else {
+                    document.getElementById('systemStatus').className = 'alert alert-danger';
+                    document.getElementById('systemStatus').innerHTML = 
+                        '<i class="fas fa-exclamation-circle"></i> ' + data.message;
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-rocket"></i> Initialize System';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-rocket"></i> Initialize System';
+            });
+        });
+
+        // Search functionality
+        document.getElementById('searchBtn').addEventListener('click', performSearch);
+        document.getElementById('searchQuery').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') performSearch();
+        });
+
+        // Quick search buttons
+        document.querySelectorAll('.quick-search').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.getElementById('searchQuery').value = this.dataset.query;
+                performSearch();
+            });
+        });
+
+        // Max results slider
+        document.getElementById('maxResults').addEventListener('input', function() {
+            document.getElementById('maxResultsLabel').textContent = this.value;
+        });
+
+        function performSearch() {
+            if (!systemReady) {
+                alert('Please initialize the system first.');
+                return;
+            }
+
+            const query = document.getElementById('searchQuery').value.trim();
+            if (!query) {
+                alert('Please enter a search query.');
+                return;
+            }
+
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').innerHTML = '';
+
+            const searchData = {
+                query: query,
+                search_type: document.getElementById('searchType').value,
+                max_results: parseInt(document.getElementById('maxResults').value)
+            };
+
+            fetch('/api/search', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(searchData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('loading').style.display = 'none';
+                
+                if (data.status === 'success') {
+                    displayResults(data.results);
+                } else {
+                    document.getElementById('results').innerHTML = 
+                        `<div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> ${data.message}</div>`;
+                }
+            })
+            .catch(error => {
+                document.getElementById('loading').style.display = 'none';
+                console.error('Error:', error);
+                document.getElementById('results').innerHTML = 
+                    '<div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> Search failed</div>';
+            });
+        }
+
+        function displayResults(results) {
+            if (results.length === 0) {
+                document.getElementById('results').innerHTML = 
+                    '<div class="alert alert-info"><i class="fas fa-info-circle"></i> No results found</div>';
+                return;
+            }
+
+            let html = `<h5><i class="fas fa-list"></i> Found ${results.length} claims</h5>`;
+            
+            results.forEach((result, index) => {
+                html += `
+                    <div class="card result-card">
+                        <div class="card-body">
+                            <h6 class="claim-id">Result ${index + 1}: ${result.claim_id}</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Type:</strong> ${result.claim_type}</p>
+                                    <p><strong>State:</strong> ${result.state}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Amount:</strong> <span class="amount">$${result.amount.toLocaleString()}</span></p>
+                                    <p><strong>Score:</strong> ${result.score.toFixed(3)} (${result.search_type})</p>
+                                </div>
+                            </div>
+                            <p class="text-muted">${result.content}</p>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('results').innerHTML = html;
+        }
+    </script>
+</body>
+</html>
