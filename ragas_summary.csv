@@ -1,6 +1,0 @@
-Metric,Score,Percentage,Grade
-Faithfulness,0.200,20.0%,D (Needs Work)
-Answer Relevancy,0.613,61.3%,C (Fair)
-Context Precision,0.062,6.2%,D (Needs Work)
-Context Recall,0.200,20.0%,D (Needs Work)
-OVERALL,0.269,26.9%,D (Needs Work)

@@ -160,6 +160,16 @@ class EnhancedInsuranceRAG:
                 content_parts.append(f"Outstanding DCC: ${outstanding_dcc:,.2f}")
                 content_parts.append(f"Total Exposure: ${(paid_indemnity + paid_dcc + outstanding_indemnity + outstanding_dcc):,.2f}")
             
+            # Add other financial information
+            if 'paid_dcc' in row:
+                dcc = float(row['paid_dcc']) if row['paid_dcc'] else 0
+                content_parts.append(f"Paid DCC: ${dcc:,.2f}")
+            
+            if 'outstanding_indemnity' in row:
+                outstanding = float(row['outstanding_indemnity']) if row['outstanding_indemnity'] else 0
+                if outstanding > 0:
+                    content_parts.append(f"Outstanding Indemnity: ${outstanding:,.2f}")
+            
             # Add description if available and meaningful
             if 'description' in row and str(row['description']) not in ['Unknown', 'No description provided', 'nan']:
                 content_parts.append(f"Loss Description: {row['description']}")
