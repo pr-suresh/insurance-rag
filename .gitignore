@@ -23,6 +23,8 @@ var/
 wheels/
 *.egg-info/
 .installed.cfg
+insurance-rag.git.bfg-report/
+insurance-rag.git/
 *.egg
 MANIFEST
 
