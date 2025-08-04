@@ -1,0 +1,54 @@
+{
+  "session_id": "20250803_202532",
+  "timestamp": "2025-08-03T20:25:38.569303",
+  "performance_metrics": {
+    "total_duration": 0.6860408782958984,
+    "total_steps": 2,
+    "total_messages": 5,
+    "session_id": "20250803_202532",
+    "guidance_generation_time": 2.846033811569214,
+    "total_llm_calls": 2,
+    "total_tokens": 0,
+    "session_total_time": 3.5459232330322266,
+    "query": "What is the total exposure for claim GL-2024-0025?",
+    "timestamp": "2025-08-03T20:25:38.569226"
+  },
+  "step_logs": [
+    {
+      "timestamp": "2025-08-03T20:25:35.029199",
+      "step": "analyze_claim_start",
+      "data": {
+        "user_query": "What is the total exposure for claim GL-2024-0025?",
+        "detected_state": "California",
+        "query_length": 50
+      },
+      "message_count": 1,
+      "session_id": "20250803_202532"
+    },
+    {
+      "timestamp": "2025-08-03T20:25:35.715165",
+      "step": "analyze_claim_complete",
+      "data": {
+        "step_duration": 0.6860408782958984,
+        "response_type": "AIMessage",
+        "tool_calls": 1,
+        "has_tool_calls": true
+      },
+      "message_count": 2,
+      "session_id": "20250803_202532"
+    },
+    {
+      "timestamp": "2025-08-03T20:25:38.568487",
+      "step": "generate_guidance_complete",
+      "data": {
+        "step_duration": 2.846033811569214,
+        "final_response_length": 1698,
+        "total_session_time": 0.6860408782958984
+      },
+      "message_count": 5,
+      "session_id": "20250803_202532"
+    }
+  ],
+  "message_count": 5,
+  "final_answer_length": 1698
+}
