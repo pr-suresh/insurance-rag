@@ -17,7 +17,7 @@ from langgraph.prebuilt import ToolNode, tools_condition
 from langgraph.graph.message import add_messages
 
 # Import your existing query system
-from smart_query import SmartRetrieverRouter
+from enhanced_rag import EnhancedInsuranceRAG
 
 load_dotenv()
 
@@ -38,10 +38,10 @@ class ClaimsAdjusterAgent:
             streaming=True
         )
         
-        # Initialize query router for claims search
-        self.router = SmartRetrieverRouter()
+        # Initialize Enhanced RAG for claims search
         print("📄 Loading claims database...")
-        self.router.hybrid_search.load_and_index_data("data/insurance_claims.csv")
+        self.rag = EnhancedInsuranceRAG(use_reranking=False)
+        self.rag.ingest_data("data/insurance_claims.csv")
         
         # Check for Tavily API key
         if not os.getenv("TAVILY_API_KEY"):
@@ -60,6 +60,12 @@ class ClaimsAdjusterAgent:
     def _create_tools(self):
         """Create the tools available to the agent"""
         
+        # Store rag in local variable for closure
+        rag_system = self.rag
+        
+        # Store last searched states for the legal search tool
+        self.last_searched_states = []
+        
         @tool
         def search_claims_database(query: str) -> str:
             """Search the internal claims database for similar cases and precedents.
@@ -70,19 +76,15 @@ class ClaimsAdjusterAgent:
             """
             print(f"🔍 Searching claims database for: {query}")
             
-            # Use the enhanced RAG system for better claim search
-            from enhanced_rag import EnhancedInsuranceRAG
-            rag = EnhancedInsuranceRAG(use_reranking=False)
-            rag.ingest_data("data/insurance_claims.csv")
-            
-            # Try claim number search first, then hybrid search
-            results = rag.hybrid_search(query, k=5)
+            # Use the pre-initialized RAG system
+            results = rag_system.hybrid_search(query, k=5)
             
             if not results:
                 return f"CLAIMS DATABASE RESULTS:\nNo results found for query: {query}"
             
-            # Format for adjuster
+            # Format for adjuster and collect states
             output = f"CLAIMS DATABASE RESULTS:\nFound {len(results)} relevant claims:\n\n"
+            states_found = []
             
             for i, result in enumerate(results[:3], 1):
                 metadata = result.get('metadata', {})
@@ -91,29 +93,49 @@ class ClaimsAdjusterAgent:
                 total_exposure = metadata.get('total_exposure', 0)
                 state = metadata.get('loss_state', 'Unknown')
                 
+                # Collect states for legal search
+                if state != 'Unknown' and state not in states_found:
+                    states_found.append(state)
+                
                 output += f"{i}. CLAIM {claim_id}:\n"
                 output += f"   Type: {claim_type}\n"
                 output += f"   Total Exposure: ${total_exposure:,.2f}\n"
                 output += f"   State: {state}\n"
                 output += f"   Details: {result['content'][:300]}...\n\n"
             
+            # Store found states for legal search
+            self.last_searched_states = states_found
+            
+            if states_found:
+                output += f"\n📍 Claims found in: {', '.join(states_found)}\n"
+                output += f"💡 Tip: Use search_state_insurance_laws to check {states_found[0]} regulations\n"
+            
             return output
         
         @tool
-        def search_state_insurance_laws(query: str, state: str = "California") -> str:
+        def search_state_insurance_laws(query: str, state: str = None) -> str:
             """Search for specific state insurance laws, regulations, and legal requirements.
-            Use this when you need to verify compliance, check legal requirements, or understand state-specific rules.
+            Automatically uses the Loss State from recently searched claims when available.
             
             Args:
                 query: The legal question or regulation to search for
-                state: The US state whose laws to search (e.g., "Texas", "California")
+                state: Optional - The US state whose laws to search. If not provided, uses states from recent claim searches.
             """
+            # Auto-detect state from recent claim searches if not provided
+            if state is None:
+                if self.last_searched_states:
+                    state = self.last_searched_states[0]  # Use first state from recent searches
+                    print(f"🗺️ Auto-detected state from claims: {state}")
+                else:
+                    state = "California"  # Default fallback
+                    print(f"🗺️ No state detected, using default: {state}")
+            
             print(f"⚖️  Searching {state} insurance laws for: {query}")
             
             # Initialize Tavily Search
             tavily = TavilySearch(max_results=3)
             
-            # Build targeted search query
+            # Build targeted search query based on the claim context
             search_query = f"{state} insurance law regulation {query} statute requirement 2024 liability claims adjuster"
             
             try:
@@ -122,10 +144,18 @@ class ClaimsAdjusterAgent:
                 
                 # Format for adjusters
                 output = f"\n{state.upper()} INSURANCE LAW RESEARCH:\n"
+                output += f"Query: {query}\n"
+                output += f"State: {state} {'(auto-detected from claims)' if state in self.last_searched_states else ''}\n\n"
+                
                 for i, result in enumerate(results, 1):
-                    output += f"\n{i}. LEGAL FINDING:\n"
+                    output += f"{i}. LEGAL FINDING:\n"
                     output += f"   {result.get('content', '')[:400]}...\n"
-                    output += f"   Source: {result.get('url', 'N/A')}\n"
+                    output += f"   Source: {result.get('url', 'N/A')}\n\n"
+                
+                # If multiple states were found in claims, suggest checking them too
+                if len(self.last_searched_states) > 1:
+                    other_states = [s for s in self.last_searched_states if s != state]
+                    output += f"\n💡 Also consider checking regulations for: {', '.join(other_states)}\n"
                 
                 return output
             except Exception as e:

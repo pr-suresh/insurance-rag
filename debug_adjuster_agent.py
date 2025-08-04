@@ -143,6 +143,9 @@ class DebugClaimsAdjusterAgent:
     def _create_tools(self):
         """Create debugging-enhanced tools."""
         
+        # Store last searched states for the legal search tool
+        self.last_searched_states = []
+        
         @tool
         def search_claims_database(query: str) -> str:
             """Search the internal claims database for similar cases and precedents."""
@@ -160,8 +163,9 @@ class DebugClaimsAdjusterAgent:
                 if not results:
                     return f"CLAIMS DATABASE RESULTS:\nNo results found for query: {query}"
                 
-                # Format for adjuster with debugging info
+                # Format for adjuster with debugging info and collect states
                 output = f"CLAIMS DATABASE RESULTS:\nFound {len(results)} relevant claims (search time: {duration:.2f}s):\n\n"
+                states_found = []
                 
                 for i, result in enumerate(results[:3], 1):
                     metadata = result.get('metadata', {})
@@ -172,11 +176,24 @@ class DebugClaimsAdjusterAgent:
                     score = result.get('score', 0)
                     search_type = result.get('type', 'unknown')
                     
+                    # Collect states for legal search
+                    if state != 'Unknown' and state not in states_found:
+                        states_found.append(state)
+                        logger.debug(f"📍 State detected: {state}")
+                    
                     output += f"{i}. CLAIM {claim_id} (Score: {score:.3f}, Type: {search_type}):\n"
                     output += f"   Type: {claim_type}\n"
                     output += f"   Total Exposure: ${total_exposure:,.2f}\n"
                     output += f"   State: {state}\n"
                     output += f"   Details: {result['content'][:300]}...\n\n"
+                
+                # Store found states for legal search
+                self.last_searched_states = states_found
+                
+                if states_found:
+                    output += f"\n📍 Claims found in: {', '.join(states_found)}\n"
+                    output += f"💡 Tip: Use search_state_insurance_laws to check {states_found[0]} regulations\n"
+                    logger.info(f"🗺️ States identified for legal research: {', '.join(states_found)}")
                 
                 logger.debug(f"Claims search output length: {len(output)} characters")
                 return output
@@ -186,8 +203,18 @@ class DebugClaimsAdjusterAgent:
                 return f"Error searching claims database: {str(e)}"
         
         @tool
-        def search_state_insurance_laws(query: str, state: str = "California") -> str:
-            """Search for specific state insurance laws and regulations."""
+        def search_state_insurance_laws(query: str, state: str = None) -> str:
+            """Search for specific state insurance laws and regulations.
+            Automatically uses the Loss State from recently searched claims when available."""
+            
+            # Auto-detect state from recent claim searches if not provided
+            if state is None:
+                if self.last_searched_states:
+                    state = self.last_searched_states[0]  # Use first state from recent searches
+                    logger.info(f"🗺️ Auto-detected state from claims: {state}")
+                else:
+                    state = "California"  # Default fallback
+                    logger.info(f"🗺️ No state detected, using default: {state}")
             
             start_time = time.time()
             logger.info(f"⚖️ Legal search: '{query}' in {state}")
@@ -211,10 +238,19 @@ class DebugClaimsAdjusterAgent:
                 
                 # Format for adjusters
                 output = f"\n{state.upper()} INSURANCE LAW RESEARCH (search time: {duration:.2f}s):\n"
+                output += f"Query: {query}\n"
+                output += f"State: {state} {'(auto-detected from claims)' if state in self.last_searched_states else ''}\n\n"
+                
                 for i, result in enumerate(results, 1):
-                    output += f"\n{i}. LEGAL FINDING:\n"
+                    output += f"{i}. LEGAL FINDING:\n"
                     output += f"   {result.get('content', '')[:400]}...\n"
-                    output += f"   Source: {result.get('url', 'N/A')}\n"
+                    output += f"   Source: {result.get('url', 'N/A')}\n\n"
+                
+                # If multiple states were found in claims, suggest checking them too
+                if len(self.last_searched_states) > 1:
+                    other_states = [s for s in self.last_searched_states if s != state]
+                    output += f"\n💡 Also consider checking regulations for: {', '.join(other_states)}\n"
+                    logger.info(f"📍 Additional states to consider: {', '.join(other_states)}")
                 
                 logger.debug(f"Legal search output length: {len(output)} characters")
                 return output
