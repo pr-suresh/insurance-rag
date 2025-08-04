@@ -2,6 +2,10 @@
 
 A sophisticated AI-powered system that combines **Retrieval-Augmented Generation (RAG)** with **legal research capabilities** to assist insurance claims adjusters in making informed decisions. The system provides comprehensive analysis of historical claims data and relevant state-specific insurance laws.
 
+Please use the following link to access my Loom video of the app:
+
+https://www.loom.com/share/311b584f2daa46f48224e5e5bd50e9f1
+
 ## 🎯 Project Purpose
 
 This system addresses the critical need for insurance adjusters to:

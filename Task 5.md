@@ -21,12 +21,12 @@ Which claims were filed in January 2024?
 📊 RAGAS EVALUATION RESULTS
 ============================================================
 
-           Metric Score Percentage          Grade
-     Faithfulness 0.200      20.0% D (Needs Work)
- Answer Relevancy 0.987      98.7% A+ (Excellent)
-Context Precision 0.000       0.0% D (Needs Work)
-   Context Recall 0.000       0.0% D (Needs Work)
-          OVERALL 0.297      29.7% D (Needs Work)
+            Metric Score Percentage          Grade
+        Faithfulness 0.200      20.0% D (Needs Work)
+    Answer Relevancy 0.987      98.7% A+ (Excellent)
+    Context Precision 0.000       0.0% D (Needs Work)
+    Context Recall 0.000       0.0% D (Needs Work)
+            OVERALL 0.297      29.7% D (Needs Work)
 
 2. What conclusions can you draw about the performance and effectiveness of your pipeline with this information?
 
