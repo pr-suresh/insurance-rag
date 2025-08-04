@@ -1,0 +1,11 @@
+question,ground_truth,vector_hit,vector_mrr,vector_time,bm25_hit,bm25_mrr,bm25_time
+What is the claim number for the cyber liability case?,GL-2024-0025,False,0.0,0.5068559646606445,True,0.5,0.0006608963012695312
+Which company was involved in the carbon monoxide incident?,Superior Mechanical Systems,False,0.0,0.5516679286956787,True,1.0,0.0013158321380615234
+What is the loss state for claim GL-2024-0025?,Virginia,False,0.0,0.3333759307861328,False,0.0,0.0009808540344238281
+What type of claim is GL-2024-0024?,General Liability,False,0.0,0.22136187553405762,False,0.0,0.0007479190826416016
+How many credit cards were exposed in the cyber breach?,"10,000",False,0.0,0.6352748870849609,True,1.0,0.001631021499633789
+What is the paid indemnity amount for GL-2024-0025?,$0,False,0.0,0.6308488845825195,False,0.0,0.0015821456909179688
+What caused the carbon monoxide exposure?,HVAC installation error,False,0.0,0.149461030960083,False,0.0,0.0008301734924316406
+What is the outstanding indemnity for the cyber liability claim?,"$250,000",False,0.0,0.6146023273468018,True,0.2,0.0007879734039306641
+Which state had the slip and fall incident?,Minnesota,False,0.0,1.3387889862060547,False,0.0,0.0009491443634033203
+What is the injury severity score for the infant in the CO case?,7,False,0.0,0.174422025680542,True,1.0,0.0017390251159667969
