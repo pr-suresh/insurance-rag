@@ -488,7 +488,7 @@ class EnhancedInsuranceRAG:
             doc_claim_id = doc.metadata.get('claim_id', '').upper().strip()
             
             # Exact match
-            if doc_claim_id == claim_number:
+            if doc_claim_id == claim_number.upper().strip():
                 exact_matches.append({
                     'content': doc.page_content,
                     'score': 1.0,
