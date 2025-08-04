@@ -41,3 +41,6 @@ Context Precision 0.000       0.0% D (Needs Work)
     
     4. Context Recall (0.0%)
     ⚠️ Missing important information in retrieval
+
+
+    Dense vector retrieval or the Naive retriever gave me very low scores on all the metrics measured above.

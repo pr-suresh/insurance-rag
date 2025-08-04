@@ -57,25 +57,19 @@ Task 3: Collect data for (at least) RAG and choose (at least) one external API
 
     RecursiveCharacterTextSplitter Configuration
 
-    Splitter Type: RecursiveCharacterTextSplitter from LangChain
-  - Chunk Size: 500 characters maximum
-  - Overlap: 50 characters between adjacent chunks
-  - Processing: Applied to structured claim documents after CSV-to-document conversion
+    I started off with the  
+      Splitter Type: RecursiveCharacterTextSplitter from LangChain
+    - Chunk Size: 500 characters maximum
+    - Overlap: 50 characters between adjacent chunks
+    - Processing: Applied to structured claim documents after CSV-to-document conversion
 
-    500 characters captures complete logical units like:
-  - A single investigation finding with context
-  - One medical assessment or legal update
-  - Complete settlement negotiation details
-  - Specific liability assessments with reasoning
+    But the claim adjuster notes are variable in length so I went with a conditional chunking strategy based on document size. If the document is small I keep it whole else I split larger documets using RecursiveCharacterTextSplitter with chunk_size = 1000
+    chunk overlap = 200. 200-character overlap (20% of chunk size) ensures context continuity
+
+    157 original claims → 362 optimized chunks
+    Average chunk size: ~1000 characters
+    Overlap ratio: 20% for context continuity
+
+    This chunking strategy seems to work well as it is domain specific and tailored for insurance claims data.
 
     
-    Focused Context: Each chunk contains actionable intelligence without overwhelming the LLM
-    with entire case histories.
-
-    Efficient Processing: 500-character chunks fit well within embedding model limits while
-    maintaining semantic coherence.
-
-    Larger chunks (1000+ characters) would include complete claim narratives but would:
-  - Dilute retrieval precision for specific adjudication questions
-  - Increase processing costs without proportional benefit
-  - Risk overwhelming the context window with less relevant details

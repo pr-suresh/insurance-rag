@@ -21,6 +21,12 @@ Task 2: Articulate your proposed solution
 
     Claim Adjusters can interact with the application by asking questions regarding the claims that are assigned to them 
 
+    The app is built using Streamlit that allows the user to either search for direct Claim Number or claim description. 
+    
+    The results has 2 parts, the first part is a combination of claims summary which is retrieved using RAG and also search results for the insurance specific legal information for the loss state from the web using Tavily web search. 
+    
+    The second part is the claim number and the total exposure details which is the sum of all the financial columns for the claim in the claim data.
+
 
 2. Describe the tools you plan to use in each part of your stack.  Write one sentence on why you made each tooling choice.
     1. LLM
@@ -55,60 +61,60 @@ Task 2: Articulate your proposed solution
         7. User Interface: Implement a User Interface with Streamlit 
 
 
-    3. Where will you use an agent or agents?  What will you use “agentic reasoning” for in your app?
+ 3. Where will you use an agent or agents?  What will you use “agentic reasoning” for in your app?
 
         The application uses LangGraph to create intelligent agents that can reason about complex
         claims adjudication scenarios.
 
         1. Intelligent Tool Selection & Orchestration
 
-    The agent autonomously decides which tools to use based on the adjuster's query:
-    - Claims Database Search: For finding historical precedents and similar cases
-    - State Law Research: For checking compliance and legal requirements
-    - Smart Retrieval Routing: Automatically choosing between BM25 (keyword), vector (semantic),
-    or hybrid search based on query characteristics
+        The agent autonomously decides which tools to use based on the adjuster's query:
+        - Claims Database Search: For finding historical precedents and similar cases
+        - State Law Research: For checking compliance and legal requirements
+        - Smart Retrieval Routing: Automatically choosing between BM25 (keyword), vector (semantic),
+        or hybrid search based on query characteristics
 
-    2. Multi-Step Decision Making Workflow
+        2. Multi-Step Decision Making Workflow
 
-    The agent follows a structured reasoning process:
-    Query Analysis → Tool Selection → Information Gathering → Legal Compliance Check → Final
-    Guidance
+        The agent follows a structured reasoning process:
+        Query Analysis → Tool Selection → Information Gathering → Legal Compliance Check → Final
+        Guidance
 
-    The agent reasons about:
-    - Context Detection: Automatically detects which state's laws to research
-    - Query Classification: Determines if the query needs legal research, precedent analysis, or
-    both
-    - Information Synthesis: Combines multiple data sources to provide comprehensive guidance
+        The agent reasons about:
+        - Context Detection: Automatically detects which state's laws to research
+        - Query Classification: Determines if the query needs legal research, precedent analysis, or
+        both
+        - Information Synthesis: Combines multiple data sources to provide comprehensive guidance
 
-    3. Dynamic Query Routing Intelligence
+        3. Dynamic Query Routing Intelligence
 
-    The SmartRetrieverRouter uses agentic reasoning to analyze queries and automatically choose
-    the best search method:
-    - BM25 (Keyword): For exact claim IDs, specific amounts, status keywords
-    - Vector (Semantic): For conceptual questions, risk analysis, pattern detection
-    - Hybrid: For complex multi-faceted queries requiring both approaches
+        The SmartRetrieverRouter uses agentic reasoning to analyze queries and automatically choose
+        the best search method:
+        - BM25 (Keyword): For exact claim IDs, specific amounts, status keywords
+        - Vector (Semantic): For conceptual questions, risk analysis, pattern detection
+        - Hybrid: For complex multi-faceted queries requiring both approaches
 
-    4. Professional Decision Support
+        4. Professional Decision Support
 
-    The agent reasons through complex adjudication scenarios by:
-    - Precedent Analysis: Finding and analyzing similar historical claims
-    - Compliance Verification: Cross-referencing actions against state regulations
-    - Risk Assessment: Identifying potential red flags and liability factors
-    - Action Recommendations: Providing specific, actionable next steps
+        The agent reasons through complex adjudication scenarios by:
+        - Precedent Analysis: Finding and analyzing similar historical claims
+        - Compliance Verification: Cross-referencing actions against state regulations
+        - Risk Assessment: Identifying potential red flags and liability factors
+        - Action Recommendations: Providing specific, actionable next steps
 
-    5. Contextual State Management
+     5. Contextual State Management
 
-    The agent maintains state throughout the conversation, remembering:
-    - Previous tool calls and their results
-    - Detected jurisdictions and applicable laws
-    - Cumulative findings from multiple data sources
+        The agent maintains state throughout the conversation, remembering:
+        - Previous tool calls and their results
+        - Detected jurisdictions and applicable laws
+        - Cumulative findings from multiple data sources
 
-        Traditional RAG systems simply retrieve and respond, but claims adjustment requires
-        reasoning about:
-        - Legal compliance across different state jurisdictions
-        - Risk assessment based on patterns in historical data
-        - Multi-source validation combining precedents with current regulations
-    
-        The agentic approach ensures adjusters get comprehensive, legally-compliant guidance rather 
-        than simple document retrieval, making the AI a true decision-support partner in the complex
-        claims adjudication process.
+            Traditional RAG systems simply retrieve and respond, but claims adjustment requires
+            reasoning about:
+            - Legal compliance across different state jurisdictions
+            - Risk assessment based on patterns in historical data
+            - Multi-source validation combining precedents with current regulations
+        
+            The agentic approach ensures adjusters get comprehensive, legally-compliant guidance rather 
+            than simple document retrieval, making the AI a true decision-support partner in the complex
+            claims adjudication process.
