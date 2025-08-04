@@ -31,6 +31,8 @@ dependencies = [
     "streamlit>=1.28.0",          # Web UI framework
     "plotly>=5.17.0",             # Interactive charts
     "streamlit-plotly-events>=0.0.6",  # Enhanced plotly integration
+    "gradio>=4.0.0",              # Alternative UI framework
+    "flask>=2.3.0",               # Web framework for custom UI
 ]
 
 [tool.uv]

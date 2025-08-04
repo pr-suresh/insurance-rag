@@ -1,0 +1,9 @@
+user_input,faithfulness,answer_relevancy,context_precision,context_recall,question_type,analysis_type
+What is the total financial exposure for claim GL-2024-0025?,0.8778853596915768,0.7850021510445334,0.7750058636738238,0.8046421476297645,simple,factual_lookup
+Which company was involved in the carbon monoxide poisoning incident?,0.8972942428328025,0.9153398974845823,0.8984359135409691,0.7773877665258833,simple,factual_lookup
+What factors contributed to the high liability assessment in the carbon monoxide case?,0.7643843639370541,0.7159594438876141,0.6937275949607207,0.7910710576206725,reasoning,causality_analysis
+How do the settlement strategies differ between cyber liability and premises liability claims?,0.6853071939367728,0.7497675301373298,0.7799768875559047,0.7989882961206434,reasoning,comparative_analysis
+What are the common patterns in high-value claims across different claim types?,0.6640881244081394,0.7778531367751818,0.7418860913355654,0.6412997519356122,multi_context,pattern_analysis
+How do claims reserves and payment patterns vary by state and claim type?,0.7811638503665616,0.7996278789976454,0.6480501033035985,0.6710958999623563,multi_context,statistical_analysis
+What compliance and regulatory issues appear most frequently across the claims portfolio?,0.8714426144413563,0.7773189090225254,0.6685491686760295,0.7093432753666928,reasoning,regulatory_analysis
+"Based on injury severity scores and settlement patterns, which claim types present the highest financial risk?",0.789498873269492,0.7807452062733782,0.7414256546548761,0.7859463573387635,multi_context,risk_assessment
