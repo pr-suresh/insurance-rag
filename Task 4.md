@@ -9,6 +9,10 @@ Task 4: Build an end-to-end Agentic RAG application using a production-grade sta
 
 **✅ Deliverables**
 
-1. Build an end-to-end prototype and deploy it to a *local* endpoint
+Build an end-to-end prototype and deploy it to a *local* endpoint
 
-I have built this and shared a loom vided of a quick demo
+    I have built this and shared a loom vided of a quick demo
+
+    Please use the following link to access my Loom video:
+
+    https://www.loom.com/share/311b584f2daa46f48224e5e5bd50e9f1
