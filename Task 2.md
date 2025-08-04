@@ -55,7 +55,7 @@ Task 2: Articulate your proposed solution
         specialized RAG evaluation metrics including faithfulness, answer relevancy, and context
         precision, specifically designed to assess retrieval-augmented generation systems.
 
-        7. User Interface: 
+        7. User Interface: Implement a User Interface with Streamlit 
 
 
     3. Where will you use an agent or agents?  What will you use “agentic reasoning” for in your app?
@@ -112,7 +112,6 @@ Task 2: Articulate your proposed solution
         - Risk assessment based on patterns in historical data
         - Multi-source validation combining precedents with current regulations
     
-
-        The agentic approach ensures adjusters get comprehensive, legally-compliant guidance rather
+        The agentic approach ensures adjusters get comprehensive, legally-compliant guidance rather 
         than simple document retrieval, making the AI a true decision-support partner in the complex
         claims adjudication process.

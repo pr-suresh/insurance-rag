@@ -1,6 +1,0 @@
-question,ground_truth
-What is the claim amount for CLM-001?,The claim amount should be found in the claims data.
-How many claims are pending?,The number of pending claims can be calculated from the status column.
-What types of insurance claims are in the database?,"The claim types include auto, property, and other categories."
-What is the average claim amount?,The average can be calculated from all claim amounts.
-Which claims were filed in January 2024?,Claims filed in January 2024 can be found by filtering the date column.
