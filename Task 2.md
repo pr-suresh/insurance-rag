@@ -32,12 +32,9 @@ Task 2: Articulate your proposed solution
     7. User Interface
     8. (Optional) Serving & Inference
 
-        1. LLM: OpenAI GPT-4o-mini and GPT-3.5-turbo - Chose GPT-4o-mini for its superior reasoning
-    capabilities in complex claim analysis while being cost-effective for production use.
+        1. LLM: Choosing OpenAI GPT‑4 as it can understand nuanced claim narratives, adjuster notes, and legal context.
 
-        2. Embedding Model: OpenAI text-embedding-3-small - Selected for its optimal balance of
-        performance and cost, providing high-quality semantic representations for insurance claim
-        documents with reasonable API pricing.
+        2. Embedding Model: OpenAI Embeddings: text-embedding-3 models for Qdrant retrieval and GPT‑4 for answering → same ecosystem reduces friction.
 
         3. Orchestration: LangGraph - Chosen for its ability to create structured, stateful
         workflows that can orchestrate complex multi-step processes like claims analysis,
