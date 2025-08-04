@@ -13,8 +13,14 @@ Task 6: Install an advanced retriever of your choosing in our Agentic RAG applic
 
 1. Describe the retrieval techniques that you plan to try and to assess in your application.  Write one sentence on why you believe each technique will be useful for your use case.
 
-    I enhanced the retrieval after the initial evaluation using RAGAS test set and the key metrics faithfulness, response relevance, context precision, and context recall. 
+    I enhanced the retrieval  after the initial evaluation using RAGAS test set and the key metrics faithfulness, response relevance, context precision, and context recall. 
+
+    I am using BM25 retrieval method for my specific project as my data is in a structured format with consistent field patterns and the domain specific terminologies are best suited for BM25. 
 
 2. Test a host of advanced retrieval techniques on your application.
 
+    Tested both Naive retriever and BM25 retriever and got better results for BM25.
+
     
+
+
