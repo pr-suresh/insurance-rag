@@ -15,6 +15,8 @@ This system addresses the critical need for insurance adjusters to:
 - **Reduce research time** from hours to minutes
 - **Improve consistency** in claims handling across different adjusters
 
+All my tasks are organized as separate .md files in the repo, please refer to them for my answers.
+
 ## 🏗️ System Architecture
 
 ### Core Components
