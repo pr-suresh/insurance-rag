@@ -6,7 +6,7 @@ Please use the following link to access my Loom video of the app:
 
 https://www.loom.com/share/311b584f2daa46f48224e5e5bd50e9f1
 
-I have updated the answers to all 7 tasks as separate .md files in the repo, please use it to check my answers.
+I have updated the answers to all 7 tasks as separate .md files in the repo(Task 1.md, Task 2.md etc..), please use it to check my answers.
 
 ## 🎯 Project Purpose
 
